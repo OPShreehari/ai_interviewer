@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+
+    <!-- Load Monaco Editor from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
+    <script>
+        // Configure Monaco editor loader
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});  
+
+        // Initialize Monaco editor once the page is loaded
+        require(['vs/editor/editor.main'], function () {
+            var editor = monaco.editor.create(document.getElementById('container'), {
+                value: 'print("Hello, World!")\n',  // Default Python code
+                language: 'python',  // Set language to Python
+                theme: 'vs-dark',    // Optional: Set editor theme (vs-dark for dark mode)
+                automaticLayout: true, // Ensure the editor resizes with the window
+            });
+
+            // Function to execute code
+            window.executeCode = function() {
+                var code = editor.getValue();  // Get the code from Monaco Editor
+
+                // Send the code as JSON in the POST request
+                fetch('/questions/execute_code/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',  // Set to JSON
+                    },
+                    body: JSON.stringify({ code: code }),  // Send code as JSON payload
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.output);  // Output of executed code
+                    alert('Code executed. Check the console for output.');
+                })
+                .catch(error => {
+                    console.error('Error executing code:', error);
+                    alert('Error executing code. Check the console for details.');
+                });
+            };
+        });
+    </script>
+
+    <!-- Optional: Add CSS to make sure Monaco Editor is visible and resizes properly -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            height: 600px; /* Set height for the editor */
+            width: 100%;   /* Make it full-width */
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Editor</h1>
+    <div id="container"></div> <!-- Monaco editor will be rendered here -->
+    <!-- Optional: Add a button to trigger code execution -->
+    <button onclick="executeCode()">Execute Code</button>
+</body>
+</html>

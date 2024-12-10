@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Interviewer Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, Interviewer!</h1>
+<p>Manage assessments by selecting an option:</p>
+<ul>
+    <li><a href="/add-questions/">Add Programming Questions</a></li>
+    <li><a href="/view-responses/">View Candidate Responses</a></li>
+</ul>
+{% endblock %}
